@@ -48,7 +48,7 @@ class LockingSerial(Serial):
         Serial.close(self)
 
 
-class SerialVTE(vte.Terminal, LockingSerial):
+class SerialVTE(vte.Terminal):
     __gsignals__ = {
         'broken-pipe': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
     }
@@ -57,7 +57,7 @@ class SerialVTE(vte.Terminal, LockingSerial):
     def __init__(self):
         self.__gobject_init__()
         vte.Terminal.__init__(self)
-        LockingSerial.__init__(self, timeout=0)
+        self._link = LockingSerial(timeout=0)
         self.set_backspace_binding(1)
         self._output_source = self._input_source = None
 
@@ -75,12 +75,12 @@ class SerialVTE(vte.Terminal, LockingSerial):
         self._output_source = self._input_source = None
 
     def open(self):
-        LockingSerial.open(self)
+        self._link.open()
         self.start()
 
     def close(self):
         self.stop()
-        LockingSerial.close(self)
+        self._link.close()
 
     def _output_handler(self, data, size):
         if self.isOpen(): self.write(data)
@@ -96,6 +96,9 @@ class SerialVTE(vte.Terminal, LockingSerial):
 
     def do_unmap(self):
         self.close()
+
+    def __getattr__(self, a):
+        return self._link.__getattribute__(a)
 
 if __name__ == "__main__":
     window = gtk.Window()
