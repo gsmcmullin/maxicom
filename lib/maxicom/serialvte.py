@@ -101,6 +101,7 @@ class SerialVTE(Vte.Terminal):
 
     def do_unmap(self):
         self.close()
+        Vte.Terminal.do_unmap(self)
 
     def __getattr__(self, a):
         return self._link.__getattribute__(a)

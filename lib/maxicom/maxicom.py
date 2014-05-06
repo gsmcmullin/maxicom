@@ -122,7 +122,7 @@ class MaxiCom:
 
     def term_popup(self, widget, event):
 	if event.button != 3: return
-	self.builder.get_object("term_popup").popup(None, None, None, event.button, event.time)
+	self.builder.get_object("term_popup").popup(None, None, None, None, event.button, event.time)
 
     def clear_buffer(self, widget):
         self.term.reset(True, True)
