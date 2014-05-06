@@ -1,0 +1,565 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="main">
+    <property name="visible">True</property>
+    <property name="title" translatable="yes">MaxiCom</property>
+    <signal name="destroy" handler="exit"/>
+    <child>
+      <object class="GtkVBox" id="vbox">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkHBox" id="hbox3">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkComboBoxEntry" id="ttydev">
+                <property name="visible">True</property>
+                <signal name="changed" handler="dev_changed"/>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="baudrate">
+                <property name="visible">True</property>
+                <property name="model">baudlist</property>
+                <property name="active">0</property>
+                <signal name="changed" handler="setserial"/>
+                <child>
+                  <object class="GtkCellRendererText" id="cellrenderertext4"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="databits">
+                <property name="visible">True</property>
+                <property name="model">databitslist</property>
+                <property name="active">0</property>
+                <signal name="changed" handler="setserial"/>
+                <child>
+                  <object class="GtkCellRendererText" id="cellrenderertext1"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="parity">
+                <property name="visible">True</property>
+                <property name="model">paritylist</property>
+                <property name="active">0</property>
+                <signal name="changed" handler="setserial"/>
+                <child>
+                  <object class="GtkCellRendererText" id="cellrenderertext2"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBox" id="stopbits">
+                <property name="visible">True</property>
+                <property name="model">stopbitslist</property>
+                <property name="active">0</property>
+                <signal name="changed" handler="setserial"/>
+                <child>
+                  <object class="GtkCellRendererText" id="cellrenderertext3"/>
+                  <attributes>
+                    <attribute name="text">0</attribute>
+                  </attributes>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="connect">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="toggled" handler="connect_toggled"/>
+                <child>
+                  <object class="GtkImage" id="connect_icon">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-connect</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">7</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="receives_default">True</property>
+                <property name="related_action">clear_buffer</property>
+                <child>
+                  <object class="GtkImage" id="image2">
+                    <property name="visible">True</property>
+                    <property name="tooltip_text" translatable="yes">Clear Buffer</property>
+                    <property name="stock">gtk-clear</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="pack_type">end</property>
+                <property name="position">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">About MaxiCom</property>
+                <property name="related_action">help_about</property>
+                <child>
+                  <object class="GtkImage" id="image1">
+                    <property name="visible">True</property>
+                    <property name="stock">gtk-about</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="pack_type">end</property>
+                <property name="position">5</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox">
+            <property name="visible">True</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHBox" id="hbox1">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkStatusbar" id="statusbar">
+                <property name="visible">True</property>
+                <property name="spacing">2</property>
+                <property name="has_resize_grip">False</property>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox2">
+                <property name="visible">True</property>
+                <property name="homogeneous">True</property>
+                <child>
+                  <object class="GtkToggleButton" id="DTR">
+                    <property name="label" translatable="yes">DTR</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">True</property>
+                    <signal name="toggled" handler="dtr_toggled"/>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="RTS">
+                    <property name="label" translatable="yes">RTS</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">True</property>
+                    <signal name="toggled" handler="rts_toggled"/>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="CTS">
+                    <property name="label" translatable="yes">CTS</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">True</property>
+                    <signal name="toggled" handler="control_handler"/>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="CD">
+                    <property name="label" translatable="yes">CD</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">True</property>
+                    <signal name="toggled" handler="control_handler"/>
+                  </object>
+                  <packing>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="DSR">
+                    <property name="label" translatable="yes">DSR</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">True</property>
+                    <signal name="toggled" handler="control_handler"/>
+                  </object>
+                  <packing>
+                    <property name="position">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToggleButton" id="RI">
+                    <property name="label" translatable="yes">RI</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
+                    <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK | GDK_SUBSTRUCTURE_MASK | GDK_SCROLL_MASK</property>
+                    <signal name="toggled" handler="control_handler"/>
+                  </object>
+                  <packing>
+                    <property name="position">5</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAction" id="clear_buffer">
+    <property name="label">Clear Buffer</property>
+    <property name="tooltip">Clear the terminal window buffer</property>
+    <property name="stock_id">gtk-clear</property>
+    <signal name="activate" handler="clear_buffer"/>
+  </object>
+  <object class="GtkListStore" id="databitslist">
+    <columns>
+      <!-- column-name databits -->
+      <column type="gint"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">8</col>
+      </row>
+      <row>
+        <col id="0">7</col>
+      </row>
+      <row>
+        <col id="0">6</col>
+      </row>
+      <row>
+        <col id="0">5</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="paritylist">
+    <columns>
+      <!-- column-name parity -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">N</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">O</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">E</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="stopbitslist">
+    <columns>
+      <!-- column-name stopbits -->
+      <column type="gint"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">1</col>
+      </row>
+      <row>
+        <col id="0">2</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="baudlist">
+    <columns>
+      <!-- column-name baudrate -->
+      <column type="gint"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">115200</col>
+      </row>
+      <row>
+        <col id="0">57600</col>
+      </row>
+      <row>
+        <col id="0">38400</col>
+      </row>
+      <row>
+        <col id="0">19200</col>
+      </row>
+      <row>
+        <col id="0">9600</col>
+      </row>
+      <row>
+        <col id="0">4800</col>
+      </row>
+      <row>
+        <col id="0">2400</col>
+      </row>
+      <row>
+        <col id="0">1200</col>
+      </row>
+      <row>
+        <col id="0">600</col>
+      </row>
+      <row>
+        <col id="0">300</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="devslist">
+    <columns>
+      <!-- column-name gchararray1 -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">/dev/ttyS0</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">/dev/ttyS1</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkMenu" id="term_popup">
+    <property name="visible">True</property>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem1">
+        <property name="visible">True</property>
+        <property name="use_action_appearance">True</property>
+        <property name="related_action">clear_buffer</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
+        <property name="visible">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkMenuItem" id="imagemenuitem3">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">Transfer Files</property>
+        <child type="submenu">
+          <object class="GtkMenu" id="menu1">
+            <property name="visible">True</property>
+            <child>
+              <object class="GtkRadioMenuItem" id="xmodem">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">XModem</property>
+                <property name="active">True</property>
+                <property name="draw_as_radio">True</property>
+                <property name="group">ymodem</property>
+                <signal name="toggled" handler="protocol_changed"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkRadioMenuItem" id="ymodem">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">YModem</property>
+                <property name="draw_as_radio">True</property>
+                <signal name="toggled" handler="protocol_changed"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparatorMenuItem" id="separatormenuitem6">
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckMenuItem" id="checkmenuitem1">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Send 1k blocks</property>
+                <property name="use_underline">True</property>
+                <property name="active">True</property>
+                <signal name="toggled" handler="toggle_use1k"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkSeparatorMenuItem" id="separatormenuitem5">
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="imagemenuitem4">
+                <property name="visible">True</property>
+                <property name="use_action_appearance">True</property>
+                <property name="related_action">send_files</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkImageMenuItem" id="imagemenuitem5">
+                <property name="visible">True</property>
+                <property name="use_action_appearance">True</property>
+                <property name="related_action">recv_files</property>
+                <property name="use_underline">True</property>
+                <property name="use_stock">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separatormenuitem4">
+        <property name="visible">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="imagemenuitem1">
+        <property name="visible">True</property>
+        <property name="related_action">copy</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="imagemenuitem2">
+        <property name="visible">True</property>
+        <property name="related_action">paste</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separatormenuitem3">
+        <property name="visible">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem2">
+        <property name="visible">True</property>
+        <property name="use_action_appearance">True</property>
+        <property name="related_action">help_about</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separatormenuitem2">
+        <property name="visible">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="menuitem3">
+        <property name="visible">True</property>
+        <property name="use_action_appearance">True</property>
+        <property name="related_action">quit</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAction" id="help_about">
+    <property name="label">About MaxiCom</property>
+    <property name="stock_id">gtk-about</property>
+    <signal name="activate" handler="about"/>
+  </object>
+  <object class="GtkAction" id="quit">
+    <property name="label">Quit</property>
+    <property name="stock_id">gtk-quit</property>
+    <signal name="activate" handler="exit"/>
+  </object>
+  <object class="GtkAction" id="copy">
+    <property name="label">Copy</property>
+    <property name="stock_id">gtk-copy</property>
+    <signal name="activate" handler="copy_selection"/>
+  </object>
+  <object class="GtkAction" id="recv_files">
+    <property name="label">Receive Files...</property>
+    <property name="short_label">Receive Files...</property>
+    <property name="stock_id">gtk-save</property>
+    <signal name="activate" handler="menu_recv_files"/>
+  </object>
+  <object class="GtkAction" id="send_files">
+    <property name="label">Send files...</property>
+    <property name="short_label">Send files...</property>
+    <property name="stock_id">gtk-open</property>
+    <signal name="activate" handler="menu_send_files"/>
+  </object>
+  <object class="GtkAction" id="paste">
+    <property name="label">Paste</property>
+    <property name="short_label">Paste</property>
+    <property name="stock_id">gtk-paste</property>
+    <signal name="activate" handler="paste_selection"/>
+  </object>
+</interface>

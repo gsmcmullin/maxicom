@@ -1,0 +1,16 @@
+MaxiCom does not have to be compiled/installed to run.
+
+To run without installing: Excute the following in this directory:
+$ PYTHONPATH=lib ./maxicom
+
+To install: Run the following as root:
+# python setup.py install
+
+-------------
+Dependencies:
+pygtk
+pygobject
+pycairo
+python-vte
+pyserial
+
