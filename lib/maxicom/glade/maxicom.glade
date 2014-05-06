@@ -1,44 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
-  <object class="GtkListStore" id="baudlist">
-    <columns>
-      <!-- column-name baudrate -->
-      <column type="gint"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0">115200</col>
-      </row>
-      <row>
-        <col id="0">57600</col>
-      </row>
-      <row>
-        <col id="0">38400</col>
-      </row>
-      <row>
-        <col id="0">19200</col>
-      </row>
-      <row>
-        <col id="0">9600</col>
-      </row>
-      <row>
-        <col id="0">4800</col>
-      </row>
-      <row>
-        <col id="0">2400</col>
-      </row>
-      <row>
-        <col id="0">1200</col>
-      </row>
-      <row>
-        <col id="0">600</col>
-      </row>
-      <row>
-        <col id="0">300</col>
-      </row>
-    </data>
-  </object>
   <object class="GtkAction" id="clear_buffer">
     <property name="label">Clear Buffer</property>
     <property name="tooltip">Clear the terminal window buffer</property>
@@ -78,6 +40,44 @@
     <property name="stock_id">gtk-open</property>
     <signal name="activate" handler="menu_send_files" swapped="no"/>
   </object>
+  <object class="GtkListStore" id="baudlist">
+    <columns>
+      <!-- column-name baudrate -->
+      <column type="gint"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">115200</col>
+      </row>
+      <row>
+        <col id="0">57600</col>
+      </row>
+      <row>
+        <col id="0">38400</col>
+      </row>
+      <row>
+        <col id="0">19200</col>
+      </row>
+      <row>
+        <col id="0">9600</col>
+      </row>
+      <row>
+        <col id="0">4800</col>
+      </row>
+      <row>
+        <col id="0">2400</col>
+      </row>
+      <row>
+        <col id="0">1200</col>
+      </row>
+      <row>
+        <col id="0">600</col>
+      </row>
+      <row>
+        <col id="0">300</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkListStore" id="databitslist">
     <columns>
       <!-- column-name databits -->
@@ -116,6 +116,8 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">MaxiCom</property>
+    <property name="default_width">600</property>
+    <property name="default_height">400</property>
     <signal name="destroy" handler="exit" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox">
@@ -130,6 +132,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="has_entry">True</property>
+                <signal name="changed" handler="dev_changed" swapped="no"/>
                 <child internal-child="entry">
                   <object class="GtkEntry" id="combobox-entry">
                     <property name="can_focus">False</property>

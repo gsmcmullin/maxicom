@@ -106,19 +106,19 @@ class MaxiCom:
 
     def connect_toggled(self, connect):
         if connect.get_active():
-            self.connect_icon.set_from_stock(Gtk.STOCK_DISCONNECT, Gtk.ICON_SIZE_BUTTON)
+            self.connect_icon.set_from_stock(Gtk.STOCK_DISCONNECT, Gtk.IconSize.BUTTON)
             # check if we're already open, because connect() sets our activeness.
             if not self.term.isOpen(): self.connect()
         else:
-            self.connect_icon.set_from_stock(Gtk.STOCK_CONNECT, Gtk.ICON_SIZE_BUTTON)
+            self.connect_icon.set_from_stock(Gtk.STOCK_CONNECT, Gtk.IconSize.BUTTON)
             if self.term.isOpen(): self.disconnect()
-		
+
     def disconnect(self, msg="Disconnected"):
 	self.connect_button.set_active(False)
         self.term.close()
         self.connected_group.set_sensitive(False)
         self.status(msg)
-        self.window.set_title("[%s] - MaxiCom" % self.ttydev.get_active_text())
+        self.window.set_title("[%s] - MaxiCom" % self.ttydev.get_child().get_text())
 
     def term_popup(self, widget, event):
 	if event.button != 3: return
@@ -163,7 +163,7 @@ class MaxiCom:
 
     def connect(self):
         # Get info from main window
-        port = self.ttydev.get_active_text()
+        port = self.ttydev.get_child().get_text()
         baud = self.baudrate.get_model()[self.baudrate.get_active()][0]
         data = self.databits.get_model()[self.databits.get_active()][0]
         par = self.parity.get_model()[self.parity.get_active()][0]

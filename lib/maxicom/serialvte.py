@@ -68,9 +68,11 @@ class SerialVTE(Vte.Terminal):
 
     def stop(self):
         """Break connection between serial instance and Vte widget"""
-        if self.isOpen(): 
-            if self._input_source: GObject.source_remove(self._input_source)
-            if self._output_source: self.disconnect(self._output_source)
+        if self._link.isOpen():
+            if self._input_source:
+                GObject.source_remove(self._input_source)
+            if self._output_source:
+                self.disconnect(self._output_source)
         self._output_source = self._input_source = None
 
     def open(self):
@@ -82,11 +84,15 @@ class SerialVTE(Vte.Terminal):
         self._link.close()
 
     def _output_handler(self, data, size):
-        if self.isOpen(): self.write(data)
+        if self._link.isOpen():
+            self._link.write(data)
 
     def _input_handler(self, dev, conf):
-        data = self.read(1024)
-        if not data:
+        try:
+            data = self._link.read(1024)
+            if not data:
+                raise SerialException('Read returned 0 bytes');
+        except SerialException:
             self.close()
             self.emit("broken-pipe")
             return False
