@@ -74,8 +74,7 @@ class MaxiCom:
         #self.term.set_colors(self.term.style.white, self.term.style.black, [])
         self.term.grab_focus()
         hbox.pack_start(self.term, True, True, 0)
-        #scrollbar = Gtk.VScrollbar(self.term.get_adjustment())
-        scrollbar = Gtk.VScrollbar()
+        scrollbar = Gtk.VScrollbar(self.term.get_vadjustment())
         hbox.pack_end(scrollbar, False, False, 0)
         hbox.show_all()
 
@@ -235,16 +234,17 @@ class MaxiCom:
     def menu_recv_files(self, action):
         if not self.term.isOpen(): return
 
-        dialog = Gtk.FileChooserDialog("Receive File", parent=self.window, 
-                action=Gtk.FILE_CHOOSER_ACTION_SAVE,
-                buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL, Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
+        dialog = Gtk.FileChooserDialog("Receive File", parent=self.window,
+                    action=Gtk.FileChooserAction.SAVE,
+                    buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                             Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
 
-        if dialog.run() == Gtk.RESPONSE_OK:
+        if dialog.run() == Gtk.ResponseType.OK:
             dialog.hide()
             self.term.stop()
             xmodem.XModemReceiver(self.term, dialog.get_filename())
             self.term.start()
-			
+
 	dialog.destroy()
 
 
@@ -252,18 +252,18 @@ class MaxiCom:
         if not self.term.isOpen(): return
 
         dialog = Gtk.FileChooserDialog("Send Files...", parent=self.window,
-                    buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL, 
-                             Gtk.STOCK_OPEN, Gtk.RESPONSE_OK))
+                    buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                             Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
 	if self.protocol != "xmodem":
             dialog.set_select_multiple(True)
 
-        if dialog.run() == Gtk.RESPONSE_OK:
+        if dialog.run() == Gtk.ResponseType.OK:
             dialog.hide()
             self.send_uris(dialog.get_uris())
 
 	dialog.destroy()
 
-    def drop_handler(self, widget, drag_context, x, y, selection_data, 
+    def drop_handler(self, widget, drag_context, x, y, selection_data,
                      info, time):
         if not self.term.isOpen():
             drag_context.finish(False, False, time)
