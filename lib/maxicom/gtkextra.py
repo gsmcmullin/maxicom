@@ -15,27 +15,27 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-import gtk
+from gi.repository import Gtk
 from strings import *
 from traceback import format_exception
 
-class QuickDialog(gtk.MessageDialog):
-        def __init__(self, message, secondary=None, type=gtk.MESSAGE_ERROR, parent=None):
-                gtk.MessageDialog.__init__(self, buttons=gtk.BUTTONS_CLOSE,
+class QuickDialog(Gtk.MessageDialog):
+        def __init__(self, message, secondary=None, type=Gtk.MessageType.ERROR, parent=None):
+                Gtk.MessageDialog.__init__(self, buttons=Gtk.ButtonsType.CLOSE,
                                 message_format=message, type=type, parent=parent,
-                                flags=gtk.DIALOG_MODAL|gtk.DIALOG_DESTROY_WITH_PARENT)
+                                flags=Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT)
                 self.set_title(message)
                 if secondary: self.format_secondary_text(secondary)
                 self.connect("response", lambda x,y: x.destroy())
                 self.show_all()
 
 def QuickWarnDialog(message, secondary=None):
-        return QuickDialog(message, secondary, type=gtk.MESSAGE_WARNING)
+        return QuickDialog(message, secondary, type=Gtk.MESSAGE_WARNING)
 
 def QuickInfoDialog(message, secondary=None):
-        return QuickDialog(message, secondary, type=gtk.MESSAGE_INFO)
+        return QuickDialog(message, secondary, type=Gtk.MESSAGE_INFO)
 
-def gtk_excepthook(type, value, traceback):
+def Gtk_excepthook(type, value, traceback):
         sys.__excepthook__(type, value, traceback)
         if globals().has_key("error_on_screen"): return
         global error_on_screen
@@ -44,11 +44,11 @@ def gtk_excepthook(type, value, traceback):
                         "".join(format_exception(type, value, traceback))).run()
         exit(-1)
 
-sys.excepthook = gtk_excepthook
+sys.excepthook = Gtk_excepthook
 
-class AboutBox(gtk.AboutDialog):
+class AboutBox(Gtk.AboutDialog):
 	def __init__(self, parent=None):
-		gtk.AboutDialog.__init__(self)
+		Gtk.AboutDialog.__init__(self)
 		self.set_name(PACKAGE)
 		self.set_version(VERSION)
 		self.set_copyright(COPYRIGHT)

@@ -14,14 +14,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gobject
-import gtk
+from gi.repository import GObject, Gtk
 import serial
 import struct
 from urllib2 import urlopen
 import gtkextra
 
-crctab = ( 
+crctab = (
     0x0000,  0x1021,  0x2042,  0x3063,  0x4084,  0x50a5,  0x60c6,  0x70e7,
     0x8108,  0x9129,  0xa14a,  0xb16b,  0xc18c,  0xd1ad,  0xe1ce,  0xf1ef,
     0x1231,  0x0210,  0x3273,  0x2252,  0x52b5,  0x4294,  0x72f7,  0x62d6,
@@ -69,29 +68,29 @@ ACK = chr(0x06)
 NAK = chr(0x15)
 CAN = chr(0x18)
 
-class FileTransfer(gtk.Dialog):
+class FileTransfer(Gtk.Dialog):
     """Superclass for file transfers: Provides user interface functionality"""
     def __init__(self, text):
-        gtk.Dialog.__init__(self, flags=gtk.DIALOG_MODAL, 
-                buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL))
+        Gtk.Dialog.__init__(self, flags=Gtk.DIALOG_MODAL, 
+                buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL))
         self.connect("response", self.do_close)
         self.connect("delete-event", self.do_close)
         self.set_title("File Transfer")
 
-        vbox = gtk.VBox(False,8)
+        vbox = Gtk.VBox(False,8)
         vbox.set_border_width(8)
-        self.text = gtk.Label()
+        self.text = Gtk.Label()
         self.text.set_markup(text)
         self.text.set_alignment(0, 0.5)
         vbox.pack_start(self.text, False, False)
-        self._progress = gtk.ProgressBar()
+        self._progress = Gtk.ProgressBar()
         vbox.pack_start(self._progress, False, False)
-        self.status = gtk.Label()
+        self.status = Gtk.Label()
         self.status.set_alignment(0, 0.5)
         vbox.pack_start(self.status, False, False)
         self.vbox.pack_start(vbox)
         self.show_all()
-        
+
     def set_progress(self, fraction, text=None):
         if fraction == -1:
             self._progress.pulse()
@@ -113,7 +112,7 @@ class Sender(FileTransfer):
         self.use1k = use1k
         self.blocksize = 1024 if use1k else 128
         self.usecrc = False
-        self.source = gobject.io_add_watch(tty, gobject.IO_IN, self._in_cb)
+        self.source = GObject.io_add_watch(tty, GObject.IO_IN, self._in_cb)
         self.set_progress(0, "Waiting for receiver...")
         self.next_file()
         self.block, self.packet = self.next_packet()
@@ -127,7 +126,7 @@ class Sender(FileTransfer):
             gtkextra.QuickDialog("Transmission failed!", "Transmission cancelled by peer!").run()
             self.do_close()
 
-        if (ack != ACK) and (ack != NAK) and (ack != 'C'): 
+        if (ack != ACK) and (ack != NAK) and (ack != 'C'):
             return True
 
         if ack == 'C': self.usecrc = True
@@ -168,7 +167,7 @@ class XModemSender(Sender):
         Sender.__init__(self, tty, use1k)
         self.blockcount = (len(self.data) + self.blocksize - 1) / self.blocksize
         self.set_text("<big><b>XMODEM Transmission in progress...</b></big>\n\nSending: %s" % uris[0])
-        gtk.main()
+        Gtk.main()
 
     def next_packet(self):
         if not self.data: return 0, None
@@ -186,9 +185,9 @@ class XModemSender(Sender):
 
     def do_close(self, widget=None, response=None):
         if self.data: self.tty.write(CAN+CAN)
-        gobject.source_remove(self.source)
+        GObject.source_remove(self.source)
         FileTransfer.do_close(self, widget, response)
-        gtk.main_quit()
+        Gtk.main_quit()
 
 
 class YModemSender(Sender):
@@ -201,7 +200,7 @@ class YModemSender(Sender):
         self.totalsize = sum(1024 + len(data) for data in self.filedata)
 	self.sentsize = 0
         Sender.__init__(self, tty, use1k)
-        gtk.main()
+        Gtk.main()
 
     def next_packet(self):
         if not self.data: return 0, None
@@ -236,9 +235,9 @@ class YModemSender(Sender):
 
     def do_close(self, widget=None, response=None):
         if self.data: self.tty.write(CAN+CAN)
-        gobject.source_remove(self.source)
+        GObject.source_remove(self.source)
         FileTransfer.do_close(self, widget, response)
-        gtk.main_quit()
+        Gtk.main_quit()
 
 
 class XModemReceiver(FileTransfer):
@@ -248,17 +247,17 @@ class XModemReceiver(FileTransfer):
         self.tty = tty
         self.block = 1
         self.usecrc = 10
-        self.in_source = gobject.io_add_watch(tty, gobject.IO_IN, self._in_cb)
-        self.timeout_source = gobject.timeout_add(1000, self._timeout)
+        self.in_source = GObject.io_add_watch(tty, GObject.IO_IN, self._in_cb)
+        self.timeout_source = GObject.timeout_add(1000, self._timeout)
         self.set_progress(0, "Waiting for sender...")
         self.tty.write("C")
         self.tty.setTimeout(0.1)
-        gtk.main()
+        Gtk.main()
 
     def _in_cb(self, source, cond):
         # Restart the timer
-        gobject.source_remove(self.timeout_source)
-        self.timeout_source = gobject.timeout_add(1000, self._timeout)
+        GObject.source_remove(self.timeout_source)
+        self.timeout_source = GObject.timeout_add(1000, self._timeout)
 
         start = source.read(1)
 	if start == EOT: # End of transmission.
@@ -308,11 +307,11 @@ class XModemReceiver(FileTransfer):
     def do_close(self, widget=None, response=None):
         self.tty.setTimeout(0)
         self.file.close()
-        if response == gtk.RESPONSE_CANCEL: self.tty.write(CAN+CAN)
-        gobject.source_remove(self.in_source)
-        gobject.source_remove(self.timeout_source)
+        if response == Gtk.RESPONSE_CANCEL: self.tty.write(CAN+CAN)
+        GObject.source_remove(self.in_source)
+        GObject.source_remove(self.timeout_source)
         FileTransfer.do_close(self, widget, response)
-        gtk.main_quit()
+        Gtk.main_quit()
 
 
 senders = {

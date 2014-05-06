@@ -19,7 +19,7 @@
 from serial import Serial
 import os
 import re
-import gobject, gtk, vte
+from gi.repository import GObject, Gtk, Vte
 
 class LockingSerial(Serial):
     """Serial class implementing device locking."""
@@ -48,29 +48,28 @@ class LockingSerial(Serial):
         Serial.close(self)
 
 
-class SerialVTE(vte.Terminal):
+class SerialVTE(Vte.Terminal):
     __gsignals__ = {
-        'broken-pipe': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, ())
+        'broken-pipe': (GObject.SIGNAL_RUN_FIRST, GObject.TYPE_NONE, ())
     }
 
     """Virtual terminal emulator class which connects a serial port to a GTK+ widget"""
     def __init__(self):
-        self.__gobject_init__()
-        vte.Terminal.__init__(self)
+        Vte.Terminal.__init__(self)
         self._link = LockingSerial(timeout=0)
         self.set_backspace_binding(1)
         self._output_source = self._input_source = None
 
     def start(self):
-        """Initiate connection between serial instance and vte widget"""
+        """Initiate connection between serial instance and Vte widget"""
         if self.isOpen():
             self._output_source = self.connect("commit", SerialVTE._output_handler)
-            self._input_source = gobject.io_add_watch(self, gobject.IO_IN, self._input_handler)
+            self._input_source = GObject.io_add_watch(self, GObject.IO_IN, self._input_handler)
 
     def stop(self):
-        """Break connection between serial instance and vte widget"""
+        """Break connection between serial instance and Vte widget"""
         if self.isOpen(): 
-            if self._input_source: gobject.source_remove(self._input_source)
+            if self._input_source: GObject.source_remove(self._input_source)
             if self._output_source: self.disconnect(self._output_source)
         self._output_source = self._input_source = None
 
@@ -101,14 +100,14 @@ class SerialVTE(vte.Terminal):
         return self._link.__getattribute__(a)
 
 if __name__ == "__main__":
-    window = gtk.Window()
-    window.connect("destroy", gtk.main_quit)
+    window = Gtk.Window()
+    window.connect("destroy", Gtk.main_quit)
     term = SerialVTE()
     term.setPort("/dev/ttyUSB0")
     term.setBaudrate(115200)
     term.open()
     window.add(term)
     window.show_all()
-    gtk.main()
+    Gtk.main()
     term.close()
 

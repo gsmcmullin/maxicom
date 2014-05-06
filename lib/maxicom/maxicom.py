@@ -18,8 +18,7 @@
 
 import os, sys
 
-import gobject
-import gtk
+from gi.repository import GObject, Gtk, Gdk
 import gtkextra
 import serialvte
 
@@ -43,7 +42,7 @@ devs = ["/dev/ttyS0\n", "/dev/ttyS1\n", "/dev/ttyS2\n", "/dev/ttyS3\n",
 
 class MaxiCom:
     def __init__(self):
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(determine_path() + "/glade/maxicom.glade")
         self.builder.connect_signals(self)
 
@@ -65,22 +64,23 @@ class MaxiCom:
 
         hbox = self.builder.get_object("hbox")
         self.term = serialvte.SerialVTE()
-        self.term.drag_dest_set(gtk.DEST_DEFAULT_ALL, [], 
-                gtk.gdk.ACTION_COPY | gtk.gdk.ACTION_MOVE)
+        self.term.drag_dest_set(Gtk.DestDefaults.ALL, [],
+                Gdk.DragAction.COPY | Gdk.DragAction.MOVE)
         self.term.drag_dest_add_uri_targets()
         self.term.connect("drag-data-received", self.drop_handler)
         self.term.connect("button-press-event", self.term_popup)
         self.term.connect("broken-pipe", self.broken_pipe_callback)
         self.term.set_font_from_string("Monospace 9")
-        self.term.set_colors(self.term.style.white, self.term.style.black, [])
+        #self.term.set_colors(self.term.style.white, self.term.style.black, [])
         self.term.grab_focus()
         hbox.pack_start(self.term, True, True, 0)
-        scrollbar = gtk.VScrollbar(self.term.get_adjustment())
+        #scrollbar = Gtk.VScrollbar(self.term.get_adjustment())
+        scrollbar = Gtk.VScrollbar()
         hbox.pack_end(scrollbar, False, False, 0)
         hbox.show_all()
 
         ttydev = self.builder.get_object("ttydev")
-        self.devlist = gtk.ListStore(str)
+        self.devlist = Gtk.ListStore(str)
         for dev in devs:
             dev = dev.strip(" \t\r\n")
             if not dev or dev[0] == "#": continue
@@ -89,14 +89,14 @@ class MaxiCom:
                 self.devlist.append((dev,))
             except:
                 pass
-        sortdevlist = gtk.TreeModelSort(self.devlist)
-        sortdevlist.set_sort_column_id(0, gtk.SORT_ASCENDING)
+        sortdevlist = Gtk.TreeModelSort(self.devlist)
+        sortdevlist.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         ttydev.set_model(sortdevlist)
-        ttydev.set_text_column(0)
+        ttydev.set_entry_text_column(0)
 
 	self.setserial(None)
 
-	self.connected_group = gtk.ActionGroup("connected_group")
+	self.connected_group = Gtk.ActionGroup("connected_group")
 	for action in ("paste", "send_files", "recv_files"):
 		self.connected_group.add_action(self.builder.get_object(action))
         self.connected_group.set_sensitive(False)
@@ -106,11 +106,11 @@ class MaxiCom:
 
     def connect_toggled(self, connect):
         if connect.get_active():
-            self.connect_icon.set_from_stock(gtk.STOCK_DISCONNECT, gtk.ICON_SIZE_BUTTON)
+            self.connect_icon.set_from_stock(Gtk.STOCK_DISCONNECT, Gtk.ICON_SIZE_BUTTON)
             # check if we're already open, because connect() sets our activeness.
             if not self.term.isOpen(): self.connect()
         else:
-            self.connect_icon.set_from_stock(gtk.STOCK_CONNECT, gtk.ICON_SIZE_BUTTON)
+            self.connect_icon.set_from_stock(Gtk.STOCK_CONNECT, Gtk.ICON_SIZE_BUTTON)
             if self.term.isOpen(): self.disconnect()
 		
     def disconnect(self, msg="Disconnected"):
@@ -132,7 +132,7 @@ class MaxiCom:
 
     def paste_selection(self, action):
 	if not self.term.isOpen(): return
-	gtk.clipboard_get().request_text(lambda x, y, z: self.term.write(y if y else ''))
+	Gtk.clipboard_get().request_text(lambda x, y, z: self.term.write(y if y else ''))
 
     def status(self, msg):
         self.statusbar.pop(self.statusid)
@@ -180,13 +180,13 @@ class MaxiCom:
             self.term.setDTR(self.builder.get_object("DTR").get_active())
             self.term.setRTS(self.builder.get_object("RTS").get_active())
             self.status("Connected on %s" % port)
-            gobject.timeout_add(100, self.control_handler)
+            GObject.timeout_add(100, self.control_handler)
             # Add new port to list store
             if not self.ttydev.get_active_iter(): # Not selected from list
                 self.devlist.append((port,))
             # Add new port to saved list
             port += "\n"
-            if port not in devs: 
+            if port not in devs:
                 devs.append(port)
 
             # Update user interface
@@ -235,11 +235,11 @@ class MaxiCom:
     def menu_recv_files(self, action):
         if not self.term.isOpen(): return
 
-        dialog = gtk.FileChooserDialog("Receive File", parent=self.window, 
-                action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        dialog = Gtk.FileChooserDialog("Receive File", parent=self.window, 
+                action=Gtk.FILE_CHOOSER_ACTION_SAVE,
+                buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL, Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
 
-        if dialog.run() == gtk.RESPONSE_OK:
+        if dialog.run() == Gtk.RESPONSE_OK:
             dialog.hide()
             self.term.stop()
             xmodem.XModemReceiver(self.term, dialog.get_filename())
@@ -251,16 +251,16 @@ class MaxiCom:
     def menu_send_files(self, action):
         if not self.term.isOpen(): return
 
-        dialog = gtk.FileChooserDialog("Send Files...", parent=self.window,
-                    buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, 
-                             gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+        dialog = Gtk.FileChooserDialog("Send Files...", parent=self.window,
+                    buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL, 
+                             Gtk.STOCK_OPEN, Gtk.RESPONSE_OK))
 	if self.protocol != "xmodem":
             dialog.set_select_multiple(True)
 
-        if dialog.run() == gtk.RESPONSE_OK:
+        if dialog.run() == Gtk.RESPONSE_OK:
             dialog.hide()
             self.send_uris(dialog.get_uris())
-			
+
 	dialog.destroy()
 
     def drop_handler(self, widget, drag_context, x, y, selection_data, 
@@ -274,7 +274,7 @@ class MaxiCom:
         drag_context.finish(True, False, time)
 
     def exit(self, widget=None):
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def about(self, action=None):
         gtkextra.AboutBox(parent=self.window).run()
@@ -289,7 +289,7 @@ def main():
         print "No saved device list, using defaults."
 
     maxicom = MaxiCom()
-    gtk.main()
+    Gtk.main()
 
     # Save updated device list
     open(devsfile, "w").writelines(devs)
