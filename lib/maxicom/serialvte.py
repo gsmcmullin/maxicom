@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from serial import Serial
+from serial import Serial, SerialException
 import os
 import re
 from gi.repository import GObject, Gtk, Vte

@@ -149,7 +149,7 @@ class MaxiCom:
             self.builder.get_object("CD").set_active(self.term.getCD())
             self.builder.get_object("CTS").set_active(self.term.getCTS())
         except:
-            self.broken_pipe_handler()
+            self.broken_pipe_callback()
         return True
 
     def dtr_toggled(self, widget):
